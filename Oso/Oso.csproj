@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Version>0.25.0-dev.1</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="$(AssemblyName).Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--
+      TODO: This is not architecture-specific; are we supporting:
+        - 32-bit architectures?
+        - ARM?
+        - Musl?
+    -->
+    <Content Include="..\libpolar\osx-x64\libpolar.dylib" PackagePath="runtimes\osx-x64\native\libpolar.dylib" Condition="$([MSBuild]::IsOSPlatform('OSX')) Or '$(CIRelease)' == 'True'">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\libpolar\osx-arm64\libpolar.dylib" PackagePath="runtimes\osx-arm64\native\libpolar.dylib" Condition="$([MSBuild]::IsOSPlatform('OSX')) Or '$(CIRelease)' == 'True'">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\libpolar\linux-x64\libpolar.so" PackagePath="runtimes\linux-x64\lib\libpolar.so" Condition="$([MSBuild]::IsOSPlatform('Linux')) Or '$(CIRelease)' == 'True'">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\libpolar\win-x64\libpolar.dll" PackagePath="runtimes\win-x64\lib\libpolar.dll" Condition="$([MSBuild]::IsOSPlatform('Windows')) Or '$(CIRelease)' == 'True'">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\ExceptionMessages.restext" />
+  </ItemGroup>
+
+</Project>

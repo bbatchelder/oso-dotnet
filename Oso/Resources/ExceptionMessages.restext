@@ -1,0 +1,10 @@
+MissingConstructor=Missing constructor for class `{0}`.
+Instantiation=Failed to instantiate `{0}`.
+UnregisteredClass=Unregistered class `{0}`.
+UnexpectedPolarExpression=Received `Expression` from Polar VM. The `Expression` type is only supported when using data filtering features. Did you perform an operation over an unbound variable in your policy? To silence this error and receive an `Expression` result, pass `acceptExpression` as `true` to `Oso.Query`.
+UnexpectedPolarType=Unexpected Polar type `{0}`.
+DuplicateClassAlias=Attempted to alias `{0}` as `{1}`, but `{2}` already has that alias.
+UnregisteredInstance=Unregistered instance `{0}`.
+NotFound=The current user does not have permission to read the given resource. You should handle this error by returning a 404 error to the client.
+Forbidden=The requested action was not allowed for the given resource. You should handle this error by returning a 403 error to the client.
+UnconstrainedAction=The authorization result contained an `unconstrained` field that could represent any field, but `allowWildcard` was set to `false`. To fix, set `allowWildcard` to `true` and compare with the `*` string.
