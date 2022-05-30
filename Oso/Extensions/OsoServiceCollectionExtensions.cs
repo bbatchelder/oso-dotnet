@@ -1,13 +1,15 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Oso
 {
     public static class OsoServiceCollectionExtensions
     {
-        public static IServiceCollection AddOso(this IServiceCollection serviceCollection)
+        public static IServiceCollection AddOso(this IServiceCollection serviceCollection, Action<OsoBuilder>? builder = null)
         {
-            serviceCollection.AddSingleton<Oso>();
-
+            Oso oso = new Oso();
+            serviceCollection.AddSingleton<Oso>(oso);
+            builder?.Invoke(new OsoBuilder(oso));
             return serviceCollection;
         }
         

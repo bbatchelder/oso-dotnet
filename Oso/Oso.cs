@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using Oso.DataFiltering;
 
@@ -6,12 +7,17 @@ namespace Oso;
 
 public class Oso : Polar
 {
+    //private readonly IOptions<OsoOptions> _options;
     /// <summary> Used to differentiate between a <see cref="NotFoundException" /> and a
     /// <see cref="ForbiddenException" /> on authorization failures.
     /// </summary>
     public object ReadAction { get; set; } = "read";
 
-    public Oso() : base() { }
+    // public Oso(IOptions<OsoOptions> options) : base() {
+    //     _options = options;
+    // }
+
+    public Oso() : base() {}
 
     public bool IsAllowed(object actor, object action, object resource) => QueryRuleOnce("allow", actor, action, resource);
 
