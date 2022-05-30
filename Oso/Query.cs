@@ -271,22 +271,26 @@ public class Query : IDisposable
     {
         if (!_calls.ContainsKey(callId))
         {
-            var result = _host.ParsePolarTerm(iterable);
-            _calls[callId] = result switch
+            object? objResult = _host.ParsePolarTerm(iterable);
+            _calls[callId] = objResult switch
             {
                 IEnumerable<object> oList => oList.GetEnumerator(),
                 IEnumerable<int> intList => intList.Cast<object>().GetEnumerator(),
                 IEnumerable<double> doubleList => doubleList.Cast<object>().GetEnumerator(),
                 IEnumerable<float> floatList => floatList.Cast<object>().GetEnumerator(),
                 IEnumerable<bool> boolList => boolList.Cast<object>().GetEnumerator(),
-                _ => throw new OsoException($"Invalid iterator: value {result.ToString()} of type {result.GetType()} is not iterable"),
+                _ => throw new OsoException($"Invalid iterator: value {objResult.ToString()} of type {objResult.GetType()} is not iterable"),
             };
         }
+
+        string cachedResult = "null";
+
         if (_calls.TryGetValue(callId, out IEnumerator<object>? e))
         {
-            e.MoveNext();
-            var call = e.Current;
-            var cachedResult = _host.SerializePolarTerm(call).ToString();
+            //If no next element, then pass string "null" to Native.CallResult
+            if(e.MoveNext())
+                cachedResult = _host.SerializePolarTerm(e.Current).ToString();
+            
             Native.CallResult(_handle, callId, cachedResult);
         }
         else throw new Exception($"Unregistered call ID: {callId}");

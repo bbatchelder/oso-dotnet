@@ -2,16 +2,19 @@ using System.Reflection;
 using System.Resources;
 using System.Text.Json;
 using Oso.Ffi;
+using Oso.DataFiltering;
 
 namespace Oso;
 
 public class Host
 {
     private readonly PolarHandle _handle;
-    private readonly Dictionary<string, Type> _classes = new();
+    internal readonly Dictionary<string, Type> _classes = new();
     private readonly Dictionary<Type, ulong> _classIds = new();
     private readonly Dictionary<ulong, object?> _instances = new();
     private readonly bool _acceptExpression;
+
+    internal IDataFilterAdapter Adapter { get; set; }
 
     internal Host(PolarHandle handle)
     {

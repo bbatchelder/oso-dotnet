@@ -162,10 +162,11 @@ public class Polar : IDisposable
         return Native.NewQueryFromTerm(_handle, host, query, bindings, 0);
     }
 
-    public Query QueryRule(string rule, params object?[] args) => QueryRule(rule, null, args);
-    public Query QueryRule(string rule, Dictionary<string, object>? bindings = null, params object?[] args)
+    public Query QueryRule(string rule, params object?[] args) => QueryRule(rule, null, false, args);
+    public Query QueryRule(string rule, Dictionary<string, object>? bindings = null, bool acceptExpression = false, params object?[] args)
     {
         var host = Host.Clone();
+        host.AcceptExpression = acceptExpression;
         string predicate = host.SerializePolarTerm(new Predicate(rule, args)).ToString();
         return (bindings == null)
             ? Native.NewQueryFromTerm(_handle, host, predicate, 0)

@@ -1,3 +1,7 @@
+using System.Text.Json;
+using Newtonsoft.Json.Linq;
+using Oso.DataFiltering;
+
 namespace Oso;
 
 public class Oso : Polar
@@ -190,5 +194,75 @@ public class Oso : Polar
                             : throw new OsoException(Exceptions.GetExceptionMessage("UnconstrainedAction"));
                     }
                 }).ToHashSet();
+    }
+
+    public void SetDataFilteringAdapter(IDataFilterAdapter adapter)
+    {
+        this.Host.Adapter = adapter;
+    }
+
+    internal string PartialQuery(object actor, string action, string resourceClass)
+    {
+        var resource = new Variable("resource");
+        var bindings = new Dictionary<string, object>();
+        bindings.Add(
+            "resource",
+            new TypeConstraint(resource, resourceClass)
+        );
+
+        var query = QueryRule(
+            rule: "allow",
+            bindings: bindings,
+            acceptExpression: true,
+            actor,
+            action,
+            resource
+        );
+
+        var bindingList = new List<object>();
+        foreach(var result in query.Results)
+        {
+            foreach(var (k,v) in result)
+            {
+                var bindingsDict = new Dictionary<string,Dictionary<string,object>>();
+                var polarizedTerm = this.Host.SerializePolarTerm(v);
+                var polarDict = new Dictionary<string,object>();
+                polarDict.Add(k, polarizedTerm);
+                bindingsDict.Add("bindings", polarDict);
+                bindingList.Add(bindingsDict);
+            }
+        }
+
+        return JsonSerializer.Serialize(bindingList);
+    }
+
+    internal string SerializeTypes()
+    {
+        string rv = string.Empty;
+        var polarTypes = new Dictionary<string,Dictionary<string,object>>();
+
+        foreach(var (key, value) in this.Host._classes)
+        {
+            var fieldTypes = this.Host.Adapter.SerializeType(value);
+            polarTypes[key] = fieldTypes;
+        }
+
+        rv = JsonSerializer.Serialize(polarTypes);
+        return rv;
+    }
+
+    public object AuthorizedQuery(object actor, string action, string resource)
+    {
+        var types = SerializeTypes();
+        var partials = PartialQuery(actor, action, resource);
+
+        string plan = this.BuildDataFilter(types, partials, "resource", resource);
+        //this.Host.Adapter.ExecuteQuery();
+        return null;
+    }
+
+    public object AuthorizedResources(object actor, string action, string resource)
+    {
+        return null;
     }
 }
