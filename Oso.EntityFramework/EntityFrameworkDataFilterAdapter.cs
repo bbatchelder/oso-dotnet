@@ -6,7 +6,7 @@ namespace Oso.DataFiltering.EntityFramework;
 
 public class EntityFrameworkDataFilterAdapter<T> : IDataFilterAdapter where T : DbContext
 {
-    T _dbContext = null;
+    T _dbContext;
     public EntityFrameworkDataFilterAdapter(T dbContext)
     {
         _dbContext = dbContext;
@@ -24,7 +24,11 @@ public class EntityFrameworkDataFilterAdapter<T> : IDataFilterAdapter where T : 
     public Dictionary<string,object> SerializeType(Type type)
     {
         var rv = new Dictionary<string,object>();
-        var entityType = _dbContext.Model.FindEntityType(type.FullName);
+
+        if(type == null || type.FullName == null)
+            return rv;
+
+        var entityType = _dbContext.Model.FindEntityType(type.FullName!);
 
         if(entityType == null)
             return rv;
@@ -39,13 +43,14 @@ public class EntityFrameworkDataFilterAdapter<T> : IDataFilterAdapter where T : 
 
             if(property.IsForeignKey())
             {
+                //TODO: Handle multiple foreign keys
                 var foreignKey = property.GetContainingForeignKeys().First();
 
                 var payload = new { Relation = new { 
                     kind = "one",
-                    other_class_tag = foreignKey.DependentToPrincipal.Name,
+                    other_class_tag = foreignKey.DependentToPrincipal?.Name,
                     my_field = property.Name,
-                    other_field = foreignKey.PrincipalKey.Properties.First().Name } };
+                    other_field = foreignKey.PrincipalKey.Properties[0].Name } };
 
                 rv.Add(propertyName, payload);
             }
@@ -65,15 +70,15 @@ public class EntityFrameworkDataFilterAdapter<T> : IDataFilterAdapter where T : 
         foreach(var navProperty in navProperties)
         {
             var foreignKey = navProperty.ForeignKey;
-            string otherClassName = string.Empty;
+            string otherClassName;
 
             if(foreignKey.PrincipalEntityType.ClrType == entityType.ClrType)
             {
-                otherClassName = foreignKey.DependentToPrincipal.DeclaringEntityType.ClrType.Name;
+                otherClassName = foreignKey.DependentToPrincipal?.DeclaringEntityType.ClrType.Name ?? "";
             }
             else
             {
-                otherClassName = foreignKey.DependentToPrincipal.Name;
+                otherClassName = foreignKey.DependentToPrincipal?.Name ?? "";
             }
             
             string cardinality = "one";
@@ -85,7 +90,7 @@ public class EntityFrameworkDataFilterAdapter<T> : IDataFilterAdapter where T : 
                     kind = cardinality,
                     other_class_tag = otherClassName,
                     my_field = navProperty.Name,
-                    other_field = foreignKey.PrincipalKey.Properties.First().Name } };
+                    other_field = foreignKey.PrincipalKey.Properties[0].Name } };
 
                 rv.Add(navProperty.Name, payload);
         }
