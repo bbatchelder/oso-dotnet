@@ -207,7 +207,7 @@ public class Oso : Polar
         this.Host.Adapter = adapter;
     }
 
-    internal string PartialQuery(object actor, string action, string resourceClass)
+    public string PartialQuery(object actor, string action, string resourceClass)
     {
         var resource = new Variable("resource");
         var bindings = new Dictionary<string, object>();
@@ -242,7 +242,7 @@ public class Oso : Polar
         return JsonSerializer.Serialize(bindingList);
     }
 
-    internal string SerializeTypes()
+    public string SerializeTypes()
     {
         string rv = string.Empty;
         var polarTypes = new Dictionary<string,Dictionary<string,object>>();
@@ -262,9 +262,9 @@ public class Oso : Polar
         var types = SerializeTypes();
         var partials = PartialQuery(actor, action, resource);
 
-        string plan = this.BuildDataFilter(types, partials, "resource", resource);
-        //this.Host.Adapter.ExecuteQuery();
-        return null;
+        string plan = this.BuildDataFilter(types, partials, "resource", resource) ?? "";
+        var query = this.Host.Adapter.BuildQuery(plan);
+        return query;
     }
 
     public object AuthorizedResources(object actor, string action, string resource)

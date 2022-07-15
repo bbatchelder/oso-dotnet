@@ -1,0 +1,66 @@
+{
+    "root": "Breeding",
+    "relations": [],
+    "conditions": [
+        [
+            [
+                {
+                    "Immediate": {
+                        "Boolean": true
+                    }
+                },
+                "Eq",
+                {
+                    "Field": [
+                        "Breeding",
+                        "IsPublic"
+                    ]
+                }
+            ]
+        ],
+        [
+            [
+                {
+                    "Immediate": {
+                        "ExternalInstance": {
+                            "instance_id": 191,
+                            "constructor": null,
+                            "repr": "5c4bef9c-f46b-4c55-b1b3-8d83fcdfad43",
+                            "class_repr": "null",
+                            "class_id": null
+                        }
+                    }
+                },
+                "Eq",
+                {
+                    "Field": [
+                        "Breeding",
+                        "Id"
+                    ]
+                }
+            ]
+        ],
+        [
+            [
+                {
+                    "Immediate": {
+                        "ExternalInstance": {
+                            "instance_id": 237,
+                            "constructor": null,
+                            "repr": "9dd26487-538d-46e5-9d0c-0c417a91be60",
+                            "class_repr": "null",
+                            "class_id": null
+                        }
+                    }
+                },
+                "Eq",
+                {
+                    "Field": [
+                        "Breeding",
+                        "Id"
+                    ]
+                }
+            ]
+        ]
+    ]
+}

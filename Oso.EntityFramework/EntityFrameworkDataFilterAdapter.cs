@@ -11,14 +11,14 @@ public class EntityFrameworkDataFilterAdapter<T> : IDataFilterAdapter where T : 
     {
         _dbContext = dbContext;
     }
-    public void BuildQuery(object Filter)
+    public IQueryable BuildQuery(string plan)
     {
-        throw new NotImplementedException();
+        return null;
     }
 
-    public void ExecuteQuery(object query)
+    public IQueryable ExecuteQuery(IQueryable query)
     {
-        throw new NotImplementedException();
+        return query;
     }
 
     public Dictionary<string,object> SerializeType(Type type)

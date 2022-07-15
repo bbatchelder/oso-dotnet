@@ -1,7 +1,7 @@
 namespace Oso.DataFiltering;
 public interface IDataFilterAdapter
 {
-    void BuildQuery(object Filter);
-    void ExecuteQuery(object query);
+    IQueryable BuildQuery(string plan);
+    IQueryable ExecuteQuery(IQueryable query);
     Dictionary<string,object> SerializeType(Type type);
 }

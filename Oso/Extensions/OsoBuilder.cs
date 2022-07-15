@@ -1,9 +1,10 @@
 
 using Microsoft.Extensions.Options;
+using Oso.DataFiltering;
 
 namespace Oso
 {
-    public class OsoBuilder
+    public partial class OsoBuilder
     {
         private readonly Oso _oso;
         public OsoBuilder(Oso oso)
@@ -16,6 +17,11 @@ namespace Oso
         }
         public void LoadFiles(string filename) {
             _oso.LoadFiles(filename);
+        }
+
+        public void SetDataFilterAdapter(IDataFilterAdapter adapter)
+        {
+            _oso.Host.Adapter = adapter;
         }
     }
 }
