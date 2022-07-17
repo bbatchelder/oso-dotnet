@@ -33,68 +33,55 @@ public class EntityFrameworkDataFilterAdapter<T> : IDataFilterAdapter where T : 
         if(entityType == null)
             return rv;
 
-        
-
         var properties = entityType.GetProperties();
 
         foreach(var property in properties)
         {
             string propertyName = property.Name;
-
-            if(property.IsForeignKey())
-            {
-                //TODO: Handle multiple foreign keys
-                var foreignKey = property.GetContainingForeignKeys().First();
-
-                var payload = new { Relation = new { 
-                    kind = "one",
-                    other_class_tag = foreignKey.DependentToPrincipal?.Name,
-                    my_field = property.Name,
-                    other_field = foreignKey.PrincipalKey.Properties[0].Name } };
-
-                rv.Add(propertyName, payload);
-            }
-            else
-            {
-                // var payload = new JObject(new JProperty("Base",
-                //                     new JObject(new JProperty("class_tag", ""))));
-
-                var payload = new { Base = new { class_tag = type.Name } };
-
-                rv.Add(propertyName, payload);
-            }
+            var payload = new { Base = new { class_tag = type.Name } };
+            rv.Add(propertyName, payload);
         }
 
         var navProperties = entityType.GetNavigations();
 
         foreach(var navProperty in navProperties)
         {
-            var foreignKey = navProperty.ForeignKey;
-            string otherClassName;
-
-            if(foreignKey.PrincipalEntityType.ClrType == entityType.ClrType)
-            {
-                otherClassName = foreignKey.DependentToPrincipal?.DeclaringEntityType.ClrType.Name ?? "";
-            }
-            else
-            {
-                otherClassName = foreignKey.DependentToPrincipal?.Name ?? "";
-            }
-            
             string cardinality = "one";
 
             if(typeof(IEnumerable).IsAssignableFrom(navProperty.ClrType))
                 cardinality = "many";
+                
+            string otherType = string.Empty;
+            string otherPropertyName = string.Empty;
+            string myPropertyName = string.Empty;
+
+            bool isDependentToPrincipal = navProperty.IsDependentToPrincipal();
+
+            if(isDependentToPrincipal)
+            {
+                otherType = navProperty.TargetEntityType.Name;
+                otherPropertyName = navProperty.ForeignKey.PrincipalKey.Properties[0].Name;
+                myPropertyName = navProperty.ForeignKey.Properties[0].Name;
+            }
+            else
+            {
+                otherType = navProperty.TargetEntityType.Name;
+                otherPropertyName = navProperty.ForeignKey.Properties[0].Name;
+                myPropertyName = navProperty.ForeignKey.PrincipalKey.Properties[0].Name;
+            }
 
             var payload = new { Relation = new { 
                     kind = cardinality,
-                    other_class_tag = otherClassName,
-                    my_field = navProperty.Name,
-                    other_field = foreignKey.PrincipalKey.Properties[0].Name } };
+                    other_class_tag = otherType,
+                    other_type = otherType,
+                    other_field = otherPropertyName,
+                    my_field = myPropertyName
+                }
+            };
 
+            if(!rv.ContainsValue(payload))
                 rv.Add(navProperty.Name, payload);
         }
-
 
         return rv;
     }
