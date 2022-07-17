@@ -147,6 +147,17 @@ public class Query : IDisposable
                     int answer = _host.IsA(instance, className) ? 1 : 0;
                     Native.QuestionResult(_handle, callId, answer);
                     break;
+                case "ExternalIsaWithPath":
+                    callId = data.GetProperty("call_id").GetUInt64();
+                    string baseClassName = data.GetProperty("base_tag").GetString();
+
+                    var path = data.GetProperty("path");
+                    var pathList = _host.DeserializePolarList(path).Cast<string>().ToList();
+                    
+                    className = data.GetProperty("class_tag").GetString();
+                    answer = _host.IsAWithPath(baseClassName, pathList, className) ? 1 : 0;
+                    Native.QuestionResult(_handle, callId, answer);
+                    break;
                 case "ExternalIsSubSpecializer":
                     ulong instanceId = data.GetProperty("instance_id").GetUInt64();
                     callId = data.GetProperty("call_id").GetUInt64();
@@ -288,9 +299,9 @@ public class Query : IDisposable
         if (_calls.TryGetValue(callId, out IEnumerator<object>? e))
         {
             //If no next element, then pass string "null" to Native.CallResult
-            if(e.MoveNext())
+            if (e.MoveNext())
                 cachedResult = _host.SerializePolarTerm(e.Current).ToString();
-            
+
             Native.CallResult(_handle, callId, cachedResult);
         }
         else throw new Exception($"Unregistered call ID: {callId}");

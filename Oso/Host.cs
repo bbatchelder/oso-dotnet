@@ -100,6 +100,32 @@ public class Host
         else throw new UnregisteredClassException(className);
     }
 
+    internal bool IsAWithPath(string baseClassName, List<string> pathList, string className)
+    {
+        if (!_classes.TryGetValue(baseClassName, out Type? currentClass)) throw new OsoException($"Unregistered class exception: {baseClassName}");
+        if (!_classes.TryGetValue(className, out Type? derivedClass)) throw new OsoException($"Unregistered class exception: {className}");
+
+        
+        foreach(string propertyName in pathList)
+        {
+            var propInfo = currentClass.GetProperty(propertyName);
+
+            if(propInfo == null)
+                return false;
+
+            var propertyType = propInfo.PropertyType;
+
+            if(propertyType.Name == "Relation")
+            {
+                //Do some stuff
+            }
+
+            currentClass = propertyType;
+        }
+
+        return currentClass == derivedClass;
+    }
+
     /// <summary>
     /// </summary>
     internal bool IsSubclass(string leftTag, string rightTag)
