@@ -7,6 +7,8 @@ namespace Oso;
 
 public class Oso : Polar
 {
+    private string _types = string.Empty;
+
     //private readonly IOptions<OsoOptions> _options;
     /// <summary> Used to differentiate between a <see cref="NotFoundException" /> and a
     /// <see cref="ForbiddenException" /> on authorization failures.
@@ -259,12 +261,26 @@ public class Oso : Polar
 
     public object AuthorizedQuery(object actor, string action, string resource)
     {
-        var types = SerializeTypes();
         var partials = PartialQuery(actor, action, resource);
 
-        string plan = this.BuildDataFilter(types, partials, "resource", resource) ?? "";
+        if(string.IsNullOrEmpty(_types))
+            _types = SerializeTypes();
+
+        string plan = this.BuildDataFilter(_types, partials, "resource", resource) ?? "";
         var query = this.Host.Adapter.BuildQuery(plan);
         return query;
+    }
+
+    public string GetAuthorizationQueryPlan(object actor, string action, string resource)
+    {
+        var partials = PartialQuery(actor, action, resource);
+
+        if(string.IsNullOrEmpty(_types))
+            _types = SerializeTypes();
+
+        string plan = this.BuildDataFilter(_types, partials, "resource", resource) ?? "";
+
+        return plan;
     }
 
     public object AuthorizedResources(object actor, string action, string resource)

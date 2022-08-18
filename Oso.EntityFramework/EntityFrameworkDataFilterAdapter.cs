@@ -13,6 +13,13 @@ public class EntityFrameworkDataFilterAdapter<T> : IDataFilterAdapter where T : 
     }
     public IQueryable BuildQuery(string plan)
     {
+        Type dbContextType = _dbContext.GetType();
+
+        foreach(var propInfo in dbContextType.GetProperties())
+        {
+            string blah = propInfo.Name;
+        }
+
         return null;
     }
 
@@ -72,7 +79,7 @@ public class EntityFrameworkDataFilterAdapter<T> : IDataFilterAdapter where T : 
 
             var payload = new { Relation = new { 
                     kind = cardinality,
-                    other_class_tag = otherType,
+                    other_class_tag = otherType, //maybe not pass in?  See python and ruby implementations
                     other_type = otherType,
                     other_field = otherPropertyName,
                     my_field = myPropertyName

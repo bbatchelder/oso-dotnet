@@ -15,7 +15,7 @@ namespace Oso
         public void RegisterClass<T>() {
             _oso.RegisterClass(typeof(T));
         }
-        public void LoadFiles(string filename) {
+        public void LoadFiles(params string[] filename) {
             _oso.LoadFiles(filename);
         }
 

@@ -12,6 +12,12 @@ namespace Oso
             builder?.Invoke(new OsoBuilder(oso));
             return serviceCollection;
         }
+
+        // public static IServiceCollection AddOsoBuilder(this IServiceCollection serviceCollection, Action<OsoBuilder> builder)
+        // {
+        //     serviceCollection.AddSingleton<Action<OsoBuilder>>(builder);
+        //     return serviceCollection;
+        // }
         
     }
 }

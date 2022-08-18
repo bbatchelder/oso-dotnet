@@ -13,9 +13,9 @@ public class AuthorizedDbContext : DbContext
         this.osoContext = oso;
     }
 
-    public IQueryable AuthorizedQuery<TEntity>(object actor, string action)
+    public IQueryable<TEntity> AuthorizedQuery<TEntity>(object actor, string action)
     {
         string resource = typeof(TEntity).Name;
-        return osoContext.AuthorizedQuery(actor, action, resource) as IQueryable;
+        return osoContext.AuthorizedQuery(actor, action, resource) as IQueryable<TEntity>;
     }
 }

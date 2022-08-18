@@ -18,8 +18,10 @@ public class Polar : IDisposable
         RegisterConstant(null, "nil");
         // Register built-in classes.
         RegisterClass(typeof(bool), "Boolean");
+        RegisterClass(typeof(Guid), "Guid");
         RegisterClass(typeof(int), "Integer");
         RegisterClass(typeof(double), "Float");
+        RegisterClass(typeof(decimal), "Decimal");
         RegisterClass(typeof(List<>), "List");
         RegisterClass(typeof(Dictionary<,>), "Dictionary");
         RegisterClass(typeof(string), "String");
