@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Oso.DataFiltering.EntityFramework;
 
-public class EntityFrameworkDataFilterAdapter<T> : IDataFilterAdapter where T : DbContext
+public class EntityFrameworkDataFilterAdapter : IDataFilterAdapter
 {
-    T _dbContext;
-    public EntityFrameworkDataFilterAdapter(T dbContext)
+    DbContext _dbContext;
+    public EntityFrameworkDataFilterAdapter(DbContext dbContext)
     {
         _dbContext = dbContext;
     }

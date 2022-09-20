@@ -1,4 +1,5 @@
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Oso.DataFiltering;
 
@@ -19,9 +20,11 @@ namespace Oso
             _oso.LoadFiles(filename);
         }
 
-        public void SetDataFilterAdapter(IDataFilterAdapter adapter)
-        {
-            _oso.Host.Adapter = adapter;
-        }
+        public IServiceCollection ServicesContainer { get; set; }
+
+        // public void SetDataFilterAdapter(IDataFilterAdapter adapter)
+        // {
+        //     _oso.Host.Adapter = adapter;
+        // }
     }
 }

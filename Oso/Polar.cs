@@ -5,6 +5,7 @@ namespace Oso;
 
 public class Polar : IDisposable
 {
+    public bool ManagedByFactory { get; set; }
     private readonly PolarHandle _handle;
     public Host Host { get; }
 
@@ -219,6 +220,12 @@ public class Polar : IDisposable
     }
 
     public void Dispose()
+    {
+        if(!ManagedByFactory)
+            _handle.Dispose();
+    }
+
+    public void DisposeByFactory()
     {
         _handle.Dispose();
     }

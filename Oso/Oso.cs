@@ -261,12 +261,7 @@ public class Oso : Polar
 
     public object AuthorizedQuery(object actor, string action, string resource)
     {
-        var partials = PartialQuery(actor, action, resource);
-
-        if(string.IsNullOrEmpty(_types))
-            _types = SerializeTypes();
-
-        string plan = this.BuildDataFilter(_types, partials, "resource", resource) ?? "";
+        string plan = GetAuthorizationQueryPlan(actor, action, resource);
         var query = this.Host.Adapter.BuildQuery(plan);
         return query;
     }
