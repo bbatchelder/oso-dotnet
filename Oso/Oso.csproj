@@ -28,7 +28,7 @@
     <Content Include="..\libpolar\linux-x64\libpolar.so" PackagePath="runtimes\linux-x64\lib\libpolar.so" Condition="$([MSBuild]::IsOSPlatform('Linux')) Or '$(CIRelease)' == 'True'">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\libpolar\win-x64\libpolar.dll" PackagePath="runtimes\win-x64\lib\libpolar.dll" Condition="$([MSBuild]::IsOSPlatform('Windows')) Or '$(CIRelease)' == 'True'">
+    <Content Include="..\libpolar\win-x64\polar.dll" PackagePath="runtimes\win-x64\lib\polar.dll" Condition="$([MSBuild]::IsOSPlatform('Windows')) Or '$(CIRelease)' == 'True'">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
